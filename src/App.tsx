@@ -20,7 +20,6 @@ function App() {
 
         <Route element={<ProtectedRoutes />}>
           <Route path="/" element={<Layout />}>
-            <Route path="/overview" element={<OverviewPage />} />
             <Route path="/products" element={<ProductsPage />} />
             <Route path="/orders" element={<OrdersPage />} />
             <Route path="/analytics" element={<AnalyticsPage />} />
