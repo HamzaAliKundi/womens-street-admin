@@ -57,10 +57,13 @@ export interface ProductResponse {
   product: Product;
 }
 
+import { API_CONFIG } from '../../config/api';
+
 export const productsApi = createApi({
   reducerPath: "productsApi",
   baseQuery: fetchBaseQuery({
-    baseUrl: import.meta.env.VITE_API_BASE_URL || "http://localhost:5001/api/v1",
+    baseUrl: API_CONFIG.BASE_URL,
+    timeout: API_CONFIG.TIMEOUT,
     prepareHeaders: (headers, { getState }) => {
       // Get token from localStorage
       const token = localStorage.getItem('token');

@@ -197,8 +197,14 @@ const Products = () => {
     }
   };
 
-  const getStatusColor = (inStock: boolean) => {
-    return inStock ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800';
+  const getStatusColor = (product: Product) => {
+    const isOutOfStock = !product.inStock || product.stockQuantity <= 0;
+    return isOutOfStock ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800';
+  };
+
+  const getStatusText = (product: Product) => {
+    const isOutOfStock = !product.inStock || product.stockQuantity <= 0;
+    return isOutOfStock ? 'Out of Stock' : 'In Stock';
   };
 
   const formatPrice = (price: number) => {
@@ -481,11 +487,19 @@ const Products = () => {
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm text-slate-900">{product.stockQuantity}</div>
+                    <div className="flex items-center space-x-2">
+                      <span className="text-sm text-slate-900">{product.stockQuantity}</span>
+                      {product.stockQuantity <= 5 && product.stockQuantity > 0 && (
+                        <span className="text-xs text-amber-600 font-medium">Low Stock</span>
+                      )}
+                      {product.stockQuantity === 0 && (
+                        <span className="text-xs text-red-600 font-medium">No Stock</span>
+                      )}
+                    </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusColor(product.inStock)}`}>
-                      {product.inStock ? 'In Stock' : 'Out of Stock'}
+                    <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusColor(product)}`}>
+                      {getStatusText(product)}
                     </span>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">

@@ -1,6 +1,6 @@
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { FiGrid, FiPackage, FiShoppingCart, FiBarChart, FiSettings, FiLogOut } from "react-icons/fi";
+import { FiGrid, FiPackage, FiShoppingCart, FiBarChart, FiLogOut } from "react-icons/fi";
 
 interface SideNavProps {
   isSidebarOpen: boolean;
@@ -14,7 +14,6 @@ const navItems = [
     { name: "Analytics", path: "/analytics", icon: FiBarChart },
   ]},
   { section: "ACCOUNT", items: [
-    { name: "Settings", path: "/settings", icon: FiSettings },
     { name: "Logout", path: "#logout", icon: FiLogOut },
   ]}
 ];
