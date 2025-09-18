@@ -18,24 +18,69 @@ export const cloudinaryConfig = {
 
 export const uploadImageToCloudinary = async (file: File): Promise<UploadResult> => {
   try {
+    // Get environment variables
+    const cloudName = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
+
+    // Validate required environment variables
+    if (!cloudName) {
+      throw new Error('VITE_CLOUDINARY_CLOUD_NAME is not configured. Please check your .env file.');
+    }
+
+    console.log('Cloudinary Config:', { cloudName }); // Debug log
+
+    // Use unsigned upload with a default preset
+    // This will work if your Cloudinary account allows unsigned uploads
     const formData = new FormData();
     formData.append('file', file);
-    formData.append('upload_preset', import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET || 'women-street');
-    formData.append('cloud_name', import.meta.env.VITE_CLOUDINARY_CLOUD_NAME || '');
+    formData.append('upload_preset', 'ml_default'); // Default unsigned preset
+    formData.append('folder', 'women-street'); // Optional: organize uploads in a folder
+    
+    const uploadUrl = `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`;
+    console.log('Upload URL:', uploadUrl); // Debug log
 
-    const response = await fetch(
-      `https://api.cloudinary.com/v1_1/${import.meta.env.VITE_CLOUDINARY_CLOUD_NAME}/image/upload`,
-      {
-        method: 'POST',
-        body: formData,
-      }
-    );
+    const response = await fetch(uploadUrl, {
+      method: 'POST',
+      body: formData,
+    });
 
     if (!response.ok) {
-      throw new Error('Failed to upload image');
+      const errorText = await response.text();
+      console.error('Cloudinary API Error:', errorText);
+      
+      // If ml_default doesn't work, try without any preset
+      if (response.status === 400) {
+        console.log('Trying upload without preset...');
+        const retryFormData = new FormData();
+        retryFormData.append('file', file);
+        retryFormData.append('folder', 'women-street');
+        
+        const retryResponse = await fetch(uploadUrl, {
+          method: 'POST',
+          body: retryFormData,
+        });
+        
+        if (!retryResponse.ok) {
+          const retryErrorText = await retryResponse.text();
+          console.error('Retry Cloudinary API Error:', retryErrorText);
+          throw new Error(`Failed to upload image: ${retryResponse.status} ${retryResponse.statusText}`);
+        }
+        
+        const retryResult = await retryResponse.json();
+        console.log('Retry upload successful:', retryResult.secure_url);
+        
+        return {
+          url: retryResult.secure_url,
+          public_id: retryResult.public_id,
+          secure_url: retryResult.secure_url
+        };
+      }
+      
+      throw new Error(`Failed to upload image: ${response.status} ${response.statusText}`);
     }
 
     const result = await response.json();
+    console.log('Upload successful:', result.secure_url); // Debug log
+    
     return {
       url: result.secure_url,
       public_id: result.public_id,
@@ -43,7 +88,7 @@ export const uploadImageToCloudinary = async (file: File): Promise<UploadResult>
     };
   } catch (error) {
     console.error('Cloudinary upload error:', error);
-    throw new Error('Failed to upload image to Cloudinary');
+    throw new Error(error instanceof Error ? error.message : 'Failed to upload image to Cloudinary');
   }
 };
 

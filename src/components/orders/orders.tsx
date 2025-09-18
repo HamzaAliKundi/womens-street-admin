@@ -181,188 +181,254 @@ const Orders = () => {
 
   const handleDownloadReceipt = async (order: Order) => {
     try {
-      // Create a temporary receipt element
+      // Create a temporary receipt element with proper DOM manipulation
       const receiptElement = document.createElement('div');
-      receiptElement.innerHTML = `
-        <div style="
-          width: 400px; 
-          min-height: 600px;
-          padding: 20px; 
-          background: white; 
-          font-family: Arial, sans-serif;
-          border: 2px solid #1e293b;
-          border-radius: 8px;
-          box-sizing: border-box;
-          overflow: visible;
-        ">
-          <!-- Header -->
-          <div style="text-align: center; margin-bottom: 20px; border-bottom: 2px solid #1e293b; padding-bottom: 15px;">
-            <h1 style="margin: 0; color: #1e293b; font-size: 24px; font-weight: bold;">Women's Street</h1>
-            <p style="margin: 5px 0; color: #64748b; font-size: 14px;">Elegant Fashion Store</p>
-            <p style="margin: 5px 0; color: #64748b; font-size: 12px;">Order Receipt</p>
-          </div>
+      receiptElement.style.position = 'fixed';
+      receiptElement.style.top = '0';
+      receiptElement.style.left = '0';
+      receiptElement.style.zIndex = '9999';
+      receiptElement.style.visibility = 'visible';
+      receiptElement.style.backgroundColor = 'white';
+      receiptElement.style.width = '400px';
+      receiptElement.style.padding = '20px';
+      receiptElement.style.fontFamily = 'Arial, sans-serif';
+      receiptElement.style.border = '2px solid #1e293b';
+      receiptElement.style.borderRadius = '8px';
+      receiptElement.style.boxSizing = 'border-box';
 
-          <!-- Order Info -->
-          <div style="margin-bottom: 20px;">
-            <h3 style="margin: 0 0 10px 0; color: #1e293b; font-size: 16px; border-bottom: 1px solid #e2e8f0; padding-bottom: 5px;">
-              📋 Order Information
-            </h3>
-            <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
-              <span style="color: #64748b;">Order ID:</span>
-              <span style="color: #1e293b; font-weight: bold;">#${order.orderNumber}</span>
-            </div>
-            <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
-              <span style="color: #64748b;">Order Date:</span>
-              <span style="color: #1e293b;">${new Date(order.createdAt).toLocaleDateString()}</span>
-            </div>
-            <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
-              <span style="color: #64748b;">Status:</span>
-              <span style="color: #1e293b; font-weight: bold;">${getStatusLabel(order.status)}</span>
-            </div>
-            <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
-              <span style="color: #64748b;">Total Amount:</span>
-              <span style="color: #1e293b; font-weight: bold; font-size: 18px;">${formatPrice(order.finalTotal)}</span>
-            </div>
-          </div>
+      // Header section
+      const headerDiv = document.createElement('div');
+      headerDiv.style.cssText = 'text-align: center; margin-bottom: 20px; border-bottom: 2px solid #1e293b; padding-bottom: 15px;';
+      
+      const title = document.createElement('h1');
+      title.textContent = "Women's Street";
+      title.style.cssText = 'margin: 0; color: #1e293b; font-size: 24px; font-weight: bold;';
+      
+      const subtitle = document.createElement('p');
+      subtitle.textContent = 'Elegant Fashion Store';
+      subtitle.style.cssText = 'margin: 5px 0; color: #64748b; font-size: 14px;';
+      
+      const receiptLabel = document.createElement('p');
+      receiptLabel.textContent = 'Order Receipt';
+      receiptLabel.style.cssText = 'margin: 5px 0; color: #64748b; font-size: 12px;';
+      
+      headerDiv.appendChild(title);
+      headerDiv.appendChild(subtitle);
+      headerDiv.appendChild(receiptLabel);
 
-          <!-- Customer Info -->
-          <div style="margin-bottom: 20px;">
-            <h3 style="margin: 0 0 10px 0; color: #1e293b; font-size: 16px; border-bottom: 1px solid #e2e8f0; padding-bottom: 5px;">
-              👤 Customer Information
-            </h3>
-            <div style="margin-bottom: 8px;">
-              <div style="color: #64748b; font-size: 12px; margin-bottom: 2px;">Name:</div>
-              <div style="color: #1e293b; font-weight: bold; font-size: 14px;">${order.customerDetails.name}</div>
-            </div>
-            <div style="margin-bottom: 8px;">
-              <div style="color: #64748b; font-size: 12px; margin-bottom: 2px;">Phone:</div>
-              <div style="color: #1e293b; font-size: 14px;">${order.customerDetails.phone}</div>
-            </div>
-            <div style="margin-bottom: 8px;">
-              <div style="color: #64748b; font-size: 12px; margin-bottom: 2px;">Email:</div>
-              <div style="color: #1e293b; font-size: 14px;">${order.customerDetails.email}</div>
-            </div>
-            <div style="margin-bottom: 8px;">
-              <div style="color: #64748b; font-size: 12px; margin-bottom: 2px;">Address:</div>
-              <div style="color: #1e293b; font-size: 14px;">${order.customerDetails.address}</div>
-            </div>
-            <div style="margin-bottom: 8px;">
-              <div style="color: #64748b; font-size: 12px; margin-bottom: 2px;">City:</div>
-              <div style="color: #1e293b; font-size: 14px;">${order.customerDetails.city}</div>
-            </div>
-            <div style="margin-bottom: 8px;">
-              <div style="color: #64748b; font-size: 12px; margin-bottom: 2px;">Postal Code:</div>
-              <div style="color: #1e293b; font-size: 14px;">${order.customerDetails.postalCode}</div>
-            </div>
-          </div>
+      // Order Information
+      const orderInfoDiv = document.createElement('div');
+      orderInfoDiv.style.cssText = 'margin-bottom: 20px;';
+      
+      const orderInfoTitle = document.createElement('h3');
+      orderInfoTitle.innerHTML = '📋 Order Information';
+      orderInfoTitle.style.cssText = 'margin: 0 0 10px 0; color: #1e293b; font-size: 16px; border-bottom: 1px solid #e2e8f0; padding-bottom: 5px;';
+      orderInfoDiv.appendChild(orderInfoTitle);
+      
+      const orderDetails = [
+        ['Order ID:', '#' + order.orderNumber],
+        ['Order Date:', new Date(order.createdAt).toLocaleDateString()],
+        ['Status:', getStatusLabel(order.status)],
+        ['Total Amount:', formatPrice(order.finalTotal)]
+      ];
+      
+      orderDetails.forEach(([label, value]) => {
+        const row = document.createElement('div');
+        row.style.cssText = 'display: flex; justify-content: space-between; margin-bottom: 5px;';
+        
+        const labelSpan = document.createElement('span');
+        labelSpan.textContent = label;
+        labelSpan.style.cssText = 'color: #64748b;';
+        
+        const valueSpan = document.createElement('span');
+        valueSpan.textContent = value;
+        valueSpan.style.cssText = 'color: #1e293b; font-weight: bold;';
+        
+        row.appendChild(labelSpan);
+        row.appendChild(valueSpan);
+        orderInfoDiv.appendChild(row);
+      });
 
-          <!-- Delivery Info -->
-          <div style="margin-bottom: 20px;">
-            <h3 style="margin: 0 0 10px 0; color: #1e293b; font-size: 16px; border-bottom: 1px solid #e2e8f0; padding-bottom: 5px;">
-              🚚 Delivery Information
-            </h3>
-            <div style="margin-bottom: 8px;">
-              <div style="color: #64748b; font-size: 12px; margin-bottom: 2px;">Payment Method:</div>
-              <div style="color: #1e293b; font-size: 14px; font-weight: bold;">${order.paymentMethod}</div>
-            </div>
-            <div style="margin-bottom: 8px;">
-              <div style="color: #64748b; font-size: 12px; margin-bottom: 2px;">Nearby Place:</div>
-              <div style="color: #1e293b; font-size: 14px;">${order.customerDetails.nearbyPlace}</div>
-            </div>
-            <div style="margin-bottom: 8px;">
-              <div style="color: #64748b; font-size: 12px; margin-bottom: 2px;">Total Items:</div>
-              <div style="color: #1e293b; font-size: 14px; font-weight: bold;">${order.totalItems}</div>
-            </div>
-            ${order.customerDetails.notes ? `
-            <div style="margin-bottom: 8px;">
-              <div style="color: #64748b; font-size: 12px; margin-bottom: 2px;">Special Instructions:</div>
-              <div style="color: #1e293b; font-size: 14px; font-style: italic; background: #f8fafc; padding: 8px; border-radius: 4px;">"${order.customerDetails.notes}"</div>
-            </div>
-            ` : ''}
-          </div>
+      // Customer Information
+      const customerDiv = document.createElement('div');
+      customerDiv.style.cssText = 'margin-bottom: 20px;';
+      
+      const customerTitle = document.createElement('h3');
+      customerTitle.innerHTML = '👤 Customer Information';
+      customerTitle.style.cssText = 'margin: 0 0 10px 0; color: #1e293b; font-size: 16px; border-bottom: 1px solid #e2e8f0; padding-bottom: 5px;';
+      customerDiv.appendChild(customerTitle);
+      
+      const customerDetails = [
+        ['Name:', order.customerDetails.name],
+        ['Phone:', order.customerDetails.phone],
+        ['Email:', order.customerDetails.email],
+        ['Address:', order.customerDetails.address],
+        ['City:', order.customerDetails.city],
+        ['Postal Code:', order.customerDetails.postalCode]
+      ];
+      
+      customerDetails.forEach(([label, value]) => {
+        const container = document.createElement('div');
+        container.style.cssText = 'margin-bottom: 8px;';
+        
+        const labelDiv = document.createElement('div');
+        labelDiv.textContent = label;
+        labelDiv.style.cssText = 'color: #64748b; font-size: 12px; margin-bottom: 2px;';
+        
+        const valueDiv = document.createElement('div');
+        valueDiv.textContent = value;
+        valueDiv.style.cssText = 'color: #1e293b; font-weight: bold; font-size: 14px;';
+        
+        container.appendChild(labelDiv);
+        container.appendChild(valueDiv);
+        customerDiv.appendChild(container);
+      });
 
-          <!-- Items -->
-          <div style="margin-bottom: 20px;">
-            <h3 style="margin: 0 0 10px 0; color: #1e293b; font-size: 16px; border-bottom: 1px solid #e2e8f0; padding-bottom: 5px;">
-              🛍️ Order Items
-            </h3>
-            ${order.items.map(item => `
-              <div style="display: flex; justify-content: space-between; margin-bottom: 8px; padding: 8px; background: #f8fafc; border-radius: 4px;">
-                <div>
-                  <div style="color: #1e293b; font-weight: bold; font-size: 14px;">${item.name}</div>
-                  <div style="color: #64748b; font-size: 12px;">Qty: ${item.quantity}</div>
-                </div>
-                <div style="text-align: right;">
-                  <div style="color: #1e293b; font-weight: bold;">${formatPrice(item.price)}</div>
-                  <div style="color: #64748b; font-size: 12px;">${formatPrice(item.price * item.quantity)}</div>
-                </div>
-              </div>
-            `).join('')}
-          </div>
+      // Items section
+      const itemsDiv = document.createElement('div');
+      itemsDiv.style.cssText = 'margin-bottom: 20px;';
+      
+      const itemsTitle = document.createElement('h3');
+      itemsTitle.innerHTML = '🛍️ Order Items';
+      itemsTitle.style.cssText = 'margin: 0 0 10px 0; color: #1e293b; font-size: 16px; border-bottom: 1px solid #e2e8f0; padding-bottom: 5px;';
+      itemsDiv.appendChild(itemsTitle);
+      
+      order.items.forEach(item => {
+        const itemRow = document.createElement('div');
+        itemRow.style.cssText = 'display: flex; justify-content: space-between; margin-bottom: 8px; padding: 8px; background: #f8fafc; border-radius: 4px;';
+        
+        const leftDiv = document.createElement('div');
+        const itemName = document.createElement('div');
+        itemName.textContent = item.name;
+        itemName.style.cssText = 'color: #1e293b; font-weight: bold; font-size: 14px;';
+        
+        const itemQty = document.createElement('div');
+        itemQty.textContent = `Qty: ${item.quantity}`;
+        itemQty.style.cssText = 'color: #64748b; font-size: 12px;';
+        
+        leftDiv.appendChild(itemName);
+        leftDiv.appendChild(itemQty);
+        
+        const rightDiv = document.createElement('div');
+        rightDiv.style.cssText = 'text-align: right;';
+        
+        const itemPrice = document.createElement('div');
+        itemPrice.textContent = formatPrice(item.price);
+        itemPrice.style.cssText = 'color: #1e293b; font-weight: bold;';
+        
+        const itemTotal = document.createElement('div');
+        itemTotal.textContent = formatPrice(item.price * item.quantity);
+        itemTotal.style.cssText = 'color: #64748b; font-size: 12px;';
+        
+        rightDiv.appendChild(itemPrice);
+        rightDiv.appendChild(itemTotal);
+        
+        itemRow.appendChild(leftDiv);
+        itemRow.appendChild(rightDiv);
+        itemsDiv.appendChild(itemRow);
+      });
 
-          <!-- Order Summary -->
-          <div style="margin-bottom: 20px; padding: 15px; background: #f8fafc; border-radius: 8px; border: 1px solid #e2e8f0;">
-            <h3 style="margin: 0 0 10px 0; color: #1e293b; font-size: 16px;">💰 Order Summary</h3>
-            <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
-              <span style="color: #64748b;">Subtotal:</span>
-              <span style="color: #1e293b;">${formatPrice(order.totalAmount)}</span>
-            </div>
-            ${order.shippingCost > 0 ? `
-            <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
-              <span style="color: #64748b;">Shipping:</span>
-              <span style="color: #1e293b;">${formatPrice(order.shippingCost)}</span>
-            </div>
-            ` : ''}
-            ${order.tax > 0 ? `
-            <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
-              <span style="color: #64748b;">Tax:</span>
-              <span style="color: #1e293b;">${formatPrice(order.tax)}</span>
-            </div>
-            ` : ''}
-            <div style="border-top: 1px solid #e2e8f0; margin-top: 8px; padding-top: 8px;">
-              <div style="display: flex; justify-content: space-between;">
-                <span style="color: #1e293b; font-weight: bold; font-size: 16px;">Total:</span>
-                <span style="color: #1e293b; font-weight: bold; font-size: 18px;">${formatPrice(order.finalTotal)}</span>
-              </div>
-            </div>
-          </div>
+      // Summary section
+      const summaryDiv = document.createElement('div');
+      summaryDiv.style.cssText = 'margin-bottom: 20px; padding: 15px; background: #f8fafc; border-radius: 8px; border: 1px solid #e2e8f0;';
+      
+      const summaryTitle = document.createElement('h3');
+      summaryTitle.innerHTML = '💰 Order Summary';
+      summaryTitle.style.cssText = 'margin: 0 0 10px 0; color: #1e293b; font-size: 16px;';
+      summaryDiv.appendChild(summaryTitle);
+      
+      const subtotalRow = document.createElement('div');
+      subtotalRow.style.cssText = 'display: flex; justify-content: space-between; margin-bottom: 5px;';
+      
+      const subtotalLabel = document.createElement('span');
+      subtotalLabel.textContent = 'Subtotal:';
+      subtotalLabel.style.cssText = 'color: #64748b;';
+      
+      const subtotalValue = document.createElement('span');
+      subtotalValue.textContent = formatPrice(order.totalAmount);
+      subtotalValue.style.cssText = 'color: #1e293b;';
+      
+      subtotalRow.appendChild(subtotalLabel);
+      subtotalRow.appendChild(subtotalValue);
+      summaryDiv.appendChild(subtotalRow);
+      
+      const totalBorder = document.createElement('div');
+      totalBorder.style.cssText = 'border-top: 1px solid #e2e8f0; margin-top: 8px; padding-top: 8px;';
+      
+      const totalRow = document.createElement('div');
+      totalRow.style.cssText = 'display: flex; justify-content: space-between;';
+      
+      const totalLabel = document.createElement('span');
+      totalLabel.textContent = 'Total:';
+      totalLabel.style.cssText = 'color: #1e293b; font-weight: bold; font-size: 16px;';
+      
+      const totalValue = document.createElement('span');
+      totalValue.textContent = formatPrice(order.finalTotal);
+      totalValue.style.cssText = 'color: #1e293b; font-weight: bold; font-size: 18px;';
+      
+      totalRow.appendChild(totalLabel);
+      totalRow.appendChild(totalValue);
+      totalBorder.appendChild(totalRow);
+      summaryDiv.appendChild(totalBorder);
 
-          <!-- Footer -->
-          <div style="text-align: center; margin-top: 20px; padding-top: 15px; border-top: 2px solid #1e293b;">
-            <div style="margin-bottom: 10px;">
-              <p style="margin: 5px 0; color: #1e293b; font-weight: bold; font-size: 14px;">Thank you for shopping with us! 🎉</p>
-              <p style="margin: 5px 0; color: #64748b; font-size: 12px;">We appreciate your business and hope you love your purchase!</p>
-            </div>
-            <div style="background: #f1f5f9; padding: 8px; border-radius: 4px; margin: 10px 0;">
-              <p style="margin: 2px 0; color: #64748b; font-size: 10px;">Order #${order.orderNumber}</p>
-              <p style="margin: 2px 0; color: #64748b; font-size: 10px;">Generated on ${new Date().toLocaleString()}</p>
-              <p style="margin: 2px 0; color: #64748b; font-size: 10px;">Women's Street - Elegant Fashion Store</p>
-            </div>
-          </div>
-        </div>
-      `;
+      // Footer section
+      const footerDiv = document.createElement('div');
+      footerDiv.style.cssText = 'text-align: center; margin-top: 20px; padding-top: 15px; border-top: 2px solid #1e293b;';
+      
+      const thankYou = document.createElement('p');
+      thankYou.innerHTML = 'Thank you for shopping with us! 🎉';
+      thankYou.style.cssText = 'margin: 5px 0; color: #1e293b; font-weight: bold; font-size: 14px;';
+      
+      const appreciation = document.createElement('p');
+      appreciation.textContent = 'We appreciate your business and hope you love your purchase!';
+      appreciation.style.cssText = 'margin: 5px 0; color: #64748b; font-size: 12px;';
+      
+      const footerInfo = document.createElement('div');
+      footerInfo.style.cssText = 'background: #f1f5f9; padding: 8px; border-radius: 4px; margin: 10px 0;';
+      
+      const orderNum = document.createElement('p');
+      orderNum.textContent = `Order #${order.orderNumber}`;
+      orderNum.style.cssText = 'margin: 2px 0; color: #64748b; font-size: 10px;';
+      
+      const generatedOn = document.createElement('p');
+      generatedOn.textContent = `Generated on ${new Date().toLocaleString()}`;
+      generatedOn.style.cssText = 'margin: 2px 0; color: #64748b; font-size: 10px;';
+      
+      const storeName = document.createElement('p');
+      storeName.textContent = "Women's Street - Elegant Fashion Store";
+      storeName.style.cssText = 'margin: 2px 0; color: #64748b; font-size: 10px;';
+      
+      footerInfo.appendChild(orderNum);
+      footerInfo.appendChild(generatedOn);
+      footerInfo.appendChild(storeName);
+      
+      footerDiv.appendChild(thankYou);
+      footerDiv.appendChild(appreciation);
+      footerDiv.appendChild(footerInfo);
 
-      // Add to DOM temporarily with proper positioning
-      receiptElement.style.position = 'absolute';
-      receiptElement.style.top = '-9999px';
-      receiptElement.style.left = '-9999px';
-      receiptElement.style.zIndex = '-1';
-      receiptElement.style.visibility = 'hidden';
+      // Append all sections
+      receiptElement.appendChild(headerDiv);
+      receiptElement.appendChild(orderInfoDiv);
+      receiptElement.appendChild(customerDiv);
+      receiptElement.appendChild(itemsDiv);
+      receiptElement.appendChild(summaryDiv);
+      receiptElement.appendChild(footerDiv);
+
+      // Add to DOM temporarily
       document.body.appendChild(receiptElement);
       
-      // Ensure content is fully rendered
-      await new Promise(resolve => setTimeout(resolve, 100));
+      // Wait for rendering
+      await new Promise(resolve => setTimeout(resolve, 500));
 
-      // Convert to canvas with dynamic height
+      // Convert to canvas with better options
       const canvas = await html2canvas(receiptElement, {
-        backgroundColor: 'white',
-        scale: 2, // Higher quality
+        backgroundColor: '#ffffff',
+        scale: 2,
         useCORS: true,
-        allowTaint: true,
-        foreignObjectRendering: true,
+        allowTaint: false,
         logging: false,
         width: 400,
-        // Let height be auto-calculated based on content
+        height: receiptElement.offsetHeight,
         scrollX: 0,
         scrollY: 0
       });
@@ -373,7 +439,7 @@ const Orders = () => {
       // Download as image
       const link = document.createElement('a');
       link.download = `order-${order.orderNumber}-receipt.png`;
-      link.href = canvas.toDataURL('image/png');
+      link.href = canvas.toDataURL('image/png', 1.0);
       link.click();
 
       toast.success('Receipt downloaded successfully!');
