@@ -31,7 +31,7 @@ export const uploadImageToCloudinary = async (file: File): Promise<UploadResult>
     // Use unsigned upload preset
     const formData = new FormData();
     formData.append('file', file);
-    formData.append('upload_preset', 'ml_default'); // Using your existing preset (make sure it's unsigned)
+    formData.append("upload_preset", "unsigned_uploads"); // Your unsigned preset
     
     const uploadUrl = `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`;
     console.log('Upload URL:', uploadUrl); // Debug log
