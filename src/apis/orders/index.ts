@@ -7,6 +7,9 @@ export interface OrderItem {
   price: number;
   quantity: number;
   image: string;
+  selectedColor?: string;
+  selectedSize?: string;
+  selectedMaterial?: string;
 }
 
 export interface CustomerDetails {

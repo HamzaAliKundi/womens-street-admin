@@ -5,7 +5,8 @@ import toast from 'react-hot-toast';
 import { 
   useGetAllOrdersQuery, 
   useUpdateOrderStatusMutation,
-  type Order 
+  type Order,
+  type OrderItem 
 } from '../../apis/orders';
 
 const Orders = () => {
@@ -103,8 +104,8 @@ const Orders = () => {
         status: newStatus as Order['status'] 
       }).unwrap();
       
-      setEditingStatus(null);
-      toast.success(`Order status updated to ${getStatusLabel(newStatus)}`);
+    setEditingStatus(null);
+    toast.success(`Order status updated to ${getStatusLabel(newStatus)}`);
     } catch (error) {
       console.error('Failed to update order status:', error);
       toast.error('Failed to update order status. Please try again.');
@@ -306,8 +307,24 @@ const Orders = () => {
         itemQty.textContent = `Qty: ${item.quantity}`;
         itemQty.style.cssText = 'color: #64748b; font-size: 12px;';
         
+        // Add selected options if they exist
+        const optionsDiv = document.createElement('div');
+        optionsDiv.style.cssText = 'color: #64748b; font-size: 11px; margin-top: 2px;';
+        
+        const options = [];
+        if ((item as any).selectedColor) options.push(`Color: ${(item as any).selectedColor}`);
+        if ((item as any).selectedSize) options.push(`Size: ${(item as any).selectedSize}`);
+        if ((item as any).selectedMaterial) options.push(`Material: ${(item as any).selectedMaterial}`);
+        
+        if (options.length > 0) {
+          optionsDiv.textContent = options.join(' • ');
+        }
+        
         leftDiv.appendChild(itemName);
         leftDiv.appendChild(itemQty);
+        if (options.length > 0) {
+          leftDiv.appendChild(optionsDiv);
+        }
         
         const rightDiv = document.createElement('div');
         rightDiv.style.cssText = 'text-align: right;';
@@ -416,7 +433,7 @@ const Orders = () => {
 
       // Add to DOM temporarily
       document.body.appendChild(receiptElement);
-      
+
       // Wait for rendering
       await new Promise(resolve => setTimeout(resolve, 500));
 
@@ -539,7 +556,15 @@ const Orders = () => {
                     <div className="text-sm text-slate-900">
                       {order.items.map((item, index) => (
                         <div key={index} className="mb-1">
-                          {item.quantity}x {item.name}
+                          <div className="font-medium">{item.quantity}x {item.name}</div>
+                          {((item as any).selectedColor || (item as any).selectedSize || (item as any).selectedMaterial) && (
+                            <div className="text-xs text-gray-500 mt-1">
+                              {[(item as any).selectedColor, (item as any).selectedSize, (item as any).selectedMaterial]
+                                .filter(Boolean)
+                                .map(option => option)
+                                .join(' • ')}
+                            </div>
+                          )}
                         </div>
                       ))}
                     </div>
@@ -548,10 +573,10 @@ const Orders = () => {
                     <div className="text-sm font-semibold text-slate-900">{formatPrice(order.finalTotal)}</div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusColor(order.status)}`}>
-                      <span className="mr-1">{getStatusIcon(order.status)}</span>
-                      {getStatusLabel(order.status)}
-                    </span>
+                          <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusColor(order.status)}`}>
+                            <span className="mr-1">{getStatusIcon(order.status)}</span>
+                            {getStatusLabel(order.status)}
+                          </span>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="text-sm text-slate-900">{formatDate(order.createdAt)}</div>

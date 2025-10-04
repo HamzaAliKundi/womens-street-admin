@@ -25,6 +25,14 @@ const colors = [
   'Maroon', 'Teal', 'Coral', 'Lavender', 'Mint', 'Peach', 'Turquoise', 'Indigo', 'Violet'
 ];
 
+// Predefined sizes
+const sizes = [
+  'XS', 'S', 'M', 'L', 'XL', 'XXL', 'XXXL',
+  '28', '30', '32', '34', '36', '38', '40', '42', '44', '46', '48',
+  '6', '7', '8', '9', '10', '11', '12', '13', '14', '15',
+  'One Size', 'Free Size'
+];
+
 const Products = () => {
   const [showAddModal, setShowAddModal] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
@@ -67,12 +75,14 @@ const Products = () => {
     description: '',
     discount: '',
     colors: [] as string[],
+    sizes: [] as string[],
     rating: 0,
     reviews: 0
   });
 
   // Custom input states
   const [customColor, setCustomColor] = useState('');
+  const [customSize, setCustomSize] = useState('');
   
   // Image states
   const [selectedImages, setSelectedImages] = useState<File[]>([]);
@@ -182,6 +192,23 @@ const Products = () => {
     }));
   };
 
+  // Size management
+  const addSize = (size: string) => {
+    if (size && !formData.sizes.includes(size)) {
+      setFormData(prev => ({
+        ...prev,
+        sizes: [...prev.sizes, size]
+      }));
+    }
+  };
+
+  const removeSize = (sizeToRemove: string) => {
+    setFormData(prev => ({
+      ...prev,
+      sizes: prev.sizes.filter(size => size !== sizeToRemove)
+    }));
+  };
+
 
 
 
@@ -262,6 +289,7 @@ const Products = () => {
         category: formData.category,
         images: imageUrls,
         colors: formData.colors,
+        sizes: formData.sizes,
         stockQuantity: parseInt(formData.stockQuantity),
         discount: parseFloat(formData.discount) || 0,
       };
@@ -294,10 +322,12 @@ const Products = () => {
       description: '',
       discount: '',
       colors: [],
+      sizes: [],
       rating: 0,
       reviews: 0
     });
     setCustomColor('');
+    setCustomSize('');
     setSelectedImages([]);
     setImagePreviews([]);
   };
@@ -315,6 +345,7 @@ const Products = () => {
         description: product.description,
         discount: product.discount.toString(),
         colors: product.colors,
+        sizes: product.sizes || [],
         rating: product.rating,
         reviews: product.reviews
       });
@@ -817,6 +848,83 @@ const Products = () => {
                       }}
                       disabled={!customColor.trim()}
                       className="px-4 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-slate-300 text-white rounded-lg font-medium transition-colors"
+                    >
+                      Add
+                    </button>
+                  </div>
+                </div>
+
+                {/* Sizes Section */}
+                <div className="bg-slate-50 rounded-lg p-4">
+                  <h3 className="text-lg font-medium text-slate-900 mb-4">Available Sizes</h3>
+                  
+                  {/* Selected Sizes */}
+                  {formData.sizes.length > 0 && (
+                    <div className="mb-4">
+                      <label className="block text-sm font-medium text-slate-700 mb-2">Selected Sizes:</label>
+                      <div className="flex flex-wrap gap-2">
+                        {formData.sizes.map((size, index) => (
+                          <span
+                            key={index}
+                            className="inline-flex items-center gap-2 px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm font-medium"
+                          >
+                            {size}
+                            <button
+                              type="button"
+                              onClick={() => removeSize(size)}
+                              className="text-green-500 hover:text-green-700 text-lg leading-none"
+                            >
+                              <FiX className="w-3 h-3" />
+                            </button>
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Size Selection */}
+                  <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 gap-2 mb-4">
+                    {sizes.map((size) => (
+                      <button
+                        key={size}
+                        type="button"
+                        onClick={() => addSize(size)}
+                        disabled={formData.sizes.includes(size)}
+                        className={`px-3 py-2 text-sm font-medium rounded-lg border transition-colors ${
+                          formData.sizes.includes(size)
+                            ? 'bg-slate-200 text-slate-500 border-slate-300 cursor-not-allowed'
+                            : 'bg-white text-slate-700 border-slate-300 hover:bg-slate-50 hover:border-slate-400'
+                        }`}
+                      >
+                        {size}
+                      </button>
+                    ))}
+                  </div>
+
+                  {/* Custom Size Input */}
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      value={customSize}
+                      onChange={(e) => setCustomSize(e.target.value)}
+                      placeholder="Add custom size..."
+                      className="flex-1 px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                      onKeyPress={(e) => {
+                        if (e.key === 'Enter') {
+                          e.preventDefault();
+                          addSize(customSize);
+                          setCustomSize('');
+                        }
+                      }}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => {
+                        addSize(customSize);
+                        setCustomSize('');
+                      }}
+                      disabled={!customSize.trim()}
+                      className="px-4 py-2 bg-green-600 hover:bg-green-700 disabled:bg-slate-300 text-white rounded-lg font-medium transition-colors"
                     >
                       Add
                     </button>

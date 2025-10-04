@@ -10,6 +10,7 @@ export interface Product {
   category: string;
   images: string[];
   colors: string[];
+  sizes: string[];
   inStock: boolean;
   stockQuantity: number;
   rating: number;
@@ -28,6 +29,7 @@ export interface CreateProductRequest {
   category: string;
   images: string[];
   colors: string[];
+  sizes: string[];
   stockQuantity: number;
   discount: number;
 }
