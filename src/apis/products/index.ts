@@ -11,6 +11,8 @@ export interface Product {
   images: string[];
   colors: string[];
   sizes: string[];
+  material: string;
+  dimensions: string;
   inStock: boolean;
   stockQuantity: number;
   rating: number;
@@ -30,6 +32,8 @@ export interface CreateProductRequest {
   images: string[];
   colors: string[];
   sizes: string[];
+  material: string;
+  dimensions: string;
   stockQuantity: number;
   discount: number;
 }

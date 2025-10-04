@@ -76,6 +76,8 @@ const Products = () => {
     discount: '',
     colors: [] as string[],
     sizes: [] as string[],
+    material: '',
+    dimensions: '',
     rating: 0,
     reviews: 0
   });
@@ -290,6 +292,8 @@ const Products = () => {
         images: imageUrls,
         colors: formData.colors,
         sizes: formData.sizes,
+        material: formData.material,
+        dimensions: formData.dimensions,
         stockQuantity: parseInt(formData.stockQuantity),
         discount: parseFloat(formData.discount) || 0,
       };
@@ -323,6 +327,8 @@ const Products = () => {
       discount: '',
       colors: [],
       sizes: [],
+      material: '',
+      dimensions: '',
       rating: 0,
       reviews: 0
     });
@@ -346,6 +352,8 @@ const Products = () => {
         discount: product.discount.toString(),
         colors: product.colors,
         sizes: product.sizes || [],
+        material: product.material || '',
+        dimensions: product.dimensions || '',
         rating: product.rating,
         reviews: product.reviews
       });
