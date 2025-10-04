@@ -229,7 +229,6 @@ const Orders = () => {
       const orderDetails = [
         ['Order ID:', '#' + order.orderNumber],
         ['Order Date:', new Date(order.createdAt).toLocaleDateString()],
-        ['Status:', getStatusLabel(order.status)],
         ['Total Amount:', formatPrice(order.finalTotal)]
       ];
       
@@ -307,24 +306,21 @@ const Orders = () => {
         itemQty.textContent = `Qty: ${item.quantity}`;
         itemQty.style.cssText = 'color: #64748b; font-size: 12px;';
         
-        // Add selected options if they exist
-        const optionsDiv = document.createElement('div');
-        optionsDiv.style.cssText = 'color: #64748b; font-size: 11px; margin-top: 2px;';
+        // Add selected options if available
+        const selectedOptions = [];
+        if ((item as any).selectedColor) selectedOptions.push(`Color: ${(item as any).selectedColor}`);
+        if ((item as any).selectedSize) selectedOptions.push(`Size: ${(item as any).selectedSize}`);
+        if ((item as any).selectedMaterial) selectedOptions.push(`Material: ${(item as any).selectedMaterial}`);
         
-        const options = [];
-        if ((item as any).selectedColor) options.push(`Color: ${(item as any).selectedColor}`);
-        if ((item as any).selectedSize) options.push(`Size: ${(item as any).selectedSize}`);
-        if ((item as any).selectedMaterial) options.push(`Material: ${(item as any).selectedMaterial}`);
-        
-        if (options.length > 0) {
-          optionsDiv.textContent = options.join(' • ');
+        if (selectedOptions.length > 0) {
+          const optionsDiv = document.createElement('div');
+          optionsDiv.textContent = selectedOptions.join(', ');
+          optionsDiv.style.cssText = 'color: #64748b; font-size: 11px; margin-top: 2px;';
+          leftDiv.appendChild(optionsDiv);
         }
         
         leftDiv.appendChild(itemName);
         leftDiv.appendChild(itemQty);
-        if (options.length > 0) {
-          leftDiv.appendChild(optionsDiv);
-        }
         
         const rightDiv = document.createElement('div');
         rightDiv.style.cssText = 'text-align: right;';
@@ -555,10 +551,10 @@ const Orders = () => {
                   <td className="px-6 py-4">
                     <div className="text-sm text-slate-900">
                       {order.items.map((item, index) => (
-                        <div key={index} className="mb-1">
+                        <div key={index} className="mb-2">
                           <div className="font-medium">{item.quantity}x {item.name}</div>
                           {((item as any).selectedColor || (item as any).selectedSize || (item as any).selectedMaterial) && (
-                            <div className="text-xs text-gray-500 mt-1">
+                            <div className="text-xs text-slate-500 mt-1">
                               {[(item as any).selectedColor, (item as any).selectedSize, (item as any).selectedMaterial]
                                 .filter(Boolean)
                                 .map(option => option)
@@ -738,7 +734,17 @@ const Orders = () => {
                       <tbody>
                         {selectedOrder.items.map((item, index) => (
                           <tr key={index} className="border-t border-slate-200">
-                            <td className="px-4 py-2 text-sm text-slate-900">{item.name}</td>
+                            <td className="px-4 py-2 text-sm text-slate-900">
+                              <div className="font-medium">{item.name}</div>
+                              {((item as any).selectedColor || (item as any).selectedSize || (item as any).selectedMaterial) && (
+                                <div className="text-xs text-slate-500 mt-1">
+                                  {[(item as any).selectedColor, (item as any).selectedSize, (item as any).selectedMaterial]
+                                    .filter(Boolean)
+                                    .map(option => option)
+                                    .join(' • ')}
+                                </div>
+                              )}
+                            </td>
                             <td className="px-4 py-2 text-sm text-slate-900">{item.quantity}</td>
                             <td className="px-4 py-2 text-sm text-slate-900">{formatPrice(item.price)}</td>
                             <td className="px-4 py-2 text-sm text-slate-900">{formatPrice(item.price * item.quantity)}</td>
