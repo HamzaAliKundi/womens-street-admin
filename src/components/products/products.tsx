@@ -943,6 +943,43 @@ const Products = () => {
 
 
 
+                {/* Material and Dimensions Section */}
+                <div className="bg-slate-50 rounded-lg p-4">
+                  <h3 className="text-lg font-medium text-slate-900 mb-4">Product Details</h3>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {/* Material Field */}
+                    <div>
+                      <label className="block text-sm font-medium text-slate-700 mb-2">
+                        Material <span className="text-red-500">*</span>
+                      </label>
+                      <input
+                        type="text"
+                        value={formData.material}
+                        onChange={(e) => setFormData(prev => ({ ...prev, material: e.target.value }))}
+                        placeholder="e.g., Cotton, Polyester, Leather..."
+                        className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        required
+                      />
+                    </div>
+
+                    {/* Dimensions Field */}
+                    <div>
+                      <label className="block text-sm font-medium text-slate-700 mb-2">
+                        Dimensions <span className="text-red-500">*</span>
+                      </label>
+                      <input
+                        type="text"
+                        value={formData.dimensions}
+                        onChange={(e) => setFormData(prev => ({ ...prev, dimensions: e.target.value }))}
+                        placeholder="e.g., 10x8x2 inches, 30x20 cm..."
+                        className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        required
+                      />
+                    </div>
+                  </div>
+                </div>
+
                 {/* Images Section */}
                 <div className="bg-slate-50 rounded-lg p-4">
                   <h3 className="text-lg font-medium text-slate-900 mb-4">Product Images</h3>
