@@ -951,7 +951,7 @@ const Products = () => {
                     {/* Material Field */}
                     <div>
                       <label className="block text-sm font-medium text-slate-700 mb-2">
-                        Material <span className="text-red-500">*</span>
+                        Material
                       </label>
                       <input
                         type="text"
@@ -959,14 +959,13 @@ const Products = () => {
                         onChange={(e) => setFormData(prev => ({ ...prev, material: e.target.value }))}
                         placeholder="e.g., Cotton, Polyester, Leather..."
                         className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                        required
                       />
                     </div>
 
                     {/* Dimensions Field */}
                     <div>
                       <label className="block text-sm font-medium text-slate-700 mb-2">
-                        Dimensions <span className="text-red-500">*</span>
+                        Dimensions
                       </label>
                       <input
                         type="text"
@@ -974,7 +973,6 @@ const Products = () => {
                         onChange={(e) => setFormData(prev => ({ ...prev, dimensions: e.target.value }))}
                         placeholder="e.g., 10x8x2 inches, 30x20 cm..."
                         className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                        required
                       />
                     </div>
                   </div>
